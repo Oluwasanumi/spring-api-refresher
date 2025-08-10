@@ -34,14 +34,10 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public List<PokemonDtoResponse> getAllPokemon() {
         List<Pokemon> allPokemon = pokemonRepository.findAll();
-        return allPokemon.stream()
-                .map(pokemon -> new PokemonDtoResponse(
-                        pokemon.getId(),
-                        pokemon.getName(),
-                        pokemon.getType()))
-                .toList();
+        return allPokemon.stream().map(this::mapToDto).toList();
     }
 
+    //Custom mapper, entity to DTO
     private PokemonDtoResponse mapToDto(Pokemon pokemon) {
         PokemonDtoResponse pokemonDtoResponse = new PokemonDtoResponse();
         pokemonDtoResponse.setId(pokemon.getId());
@@ -50,9 +46,10 @@ public class PokemonServiceImpl implements PokemonService {
         return pokemonDtoResponse;
     }
 
+    //Custom mapper, DTO to entity
     private Pokemon mapToEntity(PokemonDtoResponse pokemonDtoResponse) {
         Pokemon pokemon = new Pokemon();
-        pokemon.setId(pokemonDtoResponse.getId());
+//        pokemon.setId(pokemonDtoResponse.getId());
         pokemon.setName(pokemonDtoResponse.getName());
         pokemon.setType(pokemonDtoResponse.getType());
         return pokemon;

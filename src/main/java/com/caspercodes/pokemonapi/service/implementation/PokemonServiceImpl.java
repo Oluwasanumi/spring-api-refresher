@@ -7,6 +7,8 @@ import com.caspercodes.pokemonapi.service.PokemonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PokemonServiceImpl implements PokemonService {
@@ -21,24 +23,38 @@ public class PokemonServiceImpl implements PokemonService {
 
         Pokemon savedPokemon = pokemonRepository.save(pokemon);
 
-        // Here I'm using a constructor for the DTO response object.
-        // I prefer this, easier to understand and maintain.
+        // Here I'm using a constructor for the DTO response object. I prefer this, easier to understand and maintain.
         return new PokemonDtoResponse(
                 savedPokemon.getId(),
                 savedPokemon.getName(),
                 savedPokemon.getType()
         );
+    }
 
-        /*
+    @Override
+    public List<PokemonDtoResponse> getAllPokemon() {
+        List<Pokemon> allPokemon = pokemonRepository.findAll();
+        return allPokemon.stream()
+                .map(pokemon -> new PokemonDtoResponse(
+                        pokemon.getId(),
+                        pokemon.getName(),
+                        pokemon.getType()))
+                .toList();
+    }
 
-        // Here I am using a setter for the DTO response object.
-        PokemonDtoResponse response = new PokemonDtoResponse();
-        pokemonDtoResponse.setId(savedPokemon.getId());
-        pokemonDtoResponse.setName(savedPokemon.getName());
-        pokemonDtoResponse.setType(savedPokemon.getType());
+    private PokemonDtoResponse mapToDto(Pokemon pokemon) {
+        PokemonDtoResponse pokemonDtoResponse = new PokemonDtoResponse();
+        pokemonDtoResponse.setId(pokemon.getId());
+        pokemonDtoResponse.setName(pokemon.getName());
+        pokemonDtoResponse.setType(pokemon.getType());
+        return pokemonDtoResponse;
+    }
 
-        return response;
-
-        */
+    private Pokemon mapToEntity(PokemonDtoResponse pokemonDtoResponse) {
+        Pokemon pokemon = new Pokemon();
+        pokemon.setId(pokemonDtoResponse.getId());
+        pokemon.setName(pokemonDtoResponse.getName());
+        pokemon.setType(pokemonDtoResponse.getType());
+        return pokemon;
     }
 }

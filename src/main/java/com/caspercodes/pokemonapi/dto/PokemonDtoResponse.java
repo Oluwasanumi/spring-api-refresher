@@ -1,9 +1,13 @@
 package com.caspercodes.pokemonapi.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class PokemonDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PokemonDtoResponse {
     private int id;
     private String name;
     private String type;

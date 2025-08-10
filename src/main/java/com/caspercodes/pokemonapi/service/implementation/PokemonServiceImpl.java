@@ -21,6 +21,8 @@ public class PokemonServiceImpl implements PokemonService {
 
         Pokemon savedPokemon = pokemonRepository.save(pokemon);
 
+        // Here I'm using a constructor for the DTO response object.
+        // I prefer this, easier to understand and maintain.
         return new PokemonDtoResponse(
                 savedPokemon.getId(),
                 savedPokemon.getName(),

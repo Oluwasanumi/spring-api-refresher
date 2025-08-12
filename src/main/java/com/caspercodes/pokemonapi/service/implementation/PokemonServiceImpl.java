@@ -6,6 +6,9 @@ import com.caspercodes.pokemonapi.model.Pokemon;
 import com.caspercodes.pokemonapi.repository.PokemonRepository;
 import com.caspercodes.pokemonapi.service.PokemonService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,9 +37,12 @@ public class PokemonServiceImpl implements PokemonService {
 
     // .stream().map() is basically for many items, it converts a list of entities to a list of DTOs.
     @Override
-    public List<PokemonDtoResponse> getAllPokemon() {
-        List<Pokemon> allPokemon = pokemonRepository.findAll();
-        return allPokemon.stream()
+    public List<PokemonDtoResponse> getAllPokemon(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Pokemon> allPokemon = pokemonRepository.findAll(pageable);
+        List<Pokemon> pokemonList = allPokemon.getContent();
+
+        return pokemonList.stream()
                 .map(this::mapToDto)
                 .toList();
     }

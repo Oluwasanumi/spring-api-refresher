@@ -17,8 +17,11 @@ public class PokemonController {
     private final PokemonService pokemonService;
 
     @GetMapping("pokemon")
-    public ResponseEntity<List<PokemonDtoResponse>> getAllPokemon() {
-        return new ResponseEntity<>(pokemonService.getAllPokemon(), HttpStatus.OK);
+    public ResponseEntity<List<PokemonDtoResponse>> getAllPokemon(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    ) {
+        return new ResponseEntity<>(pokemonService.getAllPokemon(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("pokemon/{id}")

@@ -23,8 +23,8 @@ public class PokemonController {
     }
 
     @GetMapping("pokemon/{id}")
-    public Pokemon getPokemonById(@PathVariable int id) {
-        return new Pokemon(id, "Squirt", "Water");
+    public ResponseEntity<PokemonDtoResponse> getPokemonById(@PathVariable Long id) {
+        return new ResponseEntity<>(pokemonService.getPokemonById(id), HttpStatus.OK);
     }
 
     @PostMapping("pokemon/create")
@@ -34,7 +34,7 @@ public class PokemonController {
     }
 
     @PutMapping("pokemon/{id}/update")
-    public ResponseEntity<Pokemon> updatePokemon(@RequestBody Pokemon pokemon, @PathVariable("id") int pokemonId) {
+    public ResponseEntity<Pokemon> updatePokemon(@RequestBody Pokemon pokemon, @PathVariable("id") Long pokemonId) {
         System.out.println(pokemon.getName());
         System.out.println(pokemon.getType());
         return ResponseEntity.ok(pokemon);

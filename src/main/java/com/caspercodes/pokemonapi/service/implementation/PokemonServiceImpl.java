@@ -1,6 +1,7 @@
 package com.caspercodes.pokemonapi.service.implementation;
 
 import com.caspercodes.pokemonapi.dto.PokemonDtoResponse;
+import com.caspercodes.pokemonapi.exception.PokemonNotFoundException;
 import com.caspercodes.pokemonapi.model.Pokemon;
 import com.caspercodes.pokemonapi.repository.PokemonRepository;
 import com.caspercodes.pokemonapi.service.PokemonService;
@@ -31,10 +32,21 @@ public class PokemonServiceImpl implements PokemonService {
         );
     }
 
+    // .stream().map() is basically for many items, it converts a list of entities to a list of DTOs.
     @Override
     public List<PokemonDtoResponse> getAllPokemon() {
         List<Pokemon> allPokemon = pokemonRepository.findAll();
-        return allPokemon.stream().map(this::mapToDto).toList();
+        return allPokemon.stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    // .map() is for a single item, it converts a single entity to a DTO.
+    @Override
+    public PokemonDtoResponse getPokemonById(Long id) {
+        return pokemonRepository.findById(id)
+                .map(this::mapToDto)
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon not found with id: " + id));
     }
 
     //Custom mapper, entity to DTO

@@ -1,7 +1,6 @@
 package com.caspercodes.pokemonapi.controller;
 
 import com.caspercodes.pokemonapi.dto.PokemonDtoResponse;
-import com.caspercodes.pokemonapi.model.Pokemon;
 import com.caspercodes.pokemonapi.service.PokemonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,15 +33,14 @@ public class PokemonController {
     }
 
     @PutMapping("pokemon/{id}/update")
-    public ResponseEntity<Pokemon> updatePokemon(@RequestBody Pokemon pokemon, @PathVariable("id") Long pokemonId) {
-        System.out.println(pokemon.getName());
-        System.out.println(pokemon.getType());
-        return ResponseEntity.ok(pokemon);
+    public ResponseEntity<PokemonDtoResponse> updatePokemon(@RequestBody PokemonDtoResponse pokemonDtoResponse, @PathVariable("id") Long pokemonId) {
+        PokemonDtoResponse updatedPokemon = pokemonService.updatePokemon(pokemonDtoResponse, pokemonId);
+        return new ResponseEntity<>(updatedPokemon, HttpStatus.OK);
     }
 
     @DeleteMapping("/pokemon/{id}/delete")
-    public ResponseEntity<String> deletePokemon(@PathVariable("id") int pokemonId) {
-        System.out.println(pokemonId);
-        return ResponseEntity.ok("Successfully deleted pokemon with ID: " + pokemonId);
+    public ResponseEntity<String> deletePokemon(@PathVariable("id") Long pokemonId) {
+        pokemonService.deletePokemon(pokemonId);
+        return new ResponseEntity<>("Pokemon with id: " + pokemonId + " has been deleted successfully", HttpStatus.OK);
     }
 }

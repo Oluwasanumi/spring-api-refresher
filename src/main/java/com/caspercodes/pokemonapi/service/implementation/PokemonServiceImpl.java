@@ -49,6 +49,23 @@ public class PokemonServiceImpl implements PokemonService {
                 .orElseThrow(() -> new PokemonNotFoundException("Pokemon not found with id: " + id));
     }
 
+    @Override
+    public PokemonDtoResponse updatePokemon(PokemonDtoResponse pokemonDtoResponse, Long id) {
+        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon to be updated of id: " + id + " cannot found"));
+
+        pokemon.setName(pokemonDtoResponse.getName());
+        pokemon.setType(pokemonDtoResponse.getType());
+        Pokemon updatedPokemon = pokemonRepository.save(pokemon);
+
+        return mapToDto(updatedPokemon);
+    }
+
+    @Override
+    public void deletePokemon(Long id) {
+        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon to be deleted with id: " + id + " cannot found"));
+        pokemonRepository.delete(pokemon);
+    }
+
     //Custom mapper, entity to DTO
     private PokemonDtoResponse mapToDto(Pokemon pokemon) {
         PokemonDtoResponse pokemonDtoResponse = new PokemonDtoResponse();

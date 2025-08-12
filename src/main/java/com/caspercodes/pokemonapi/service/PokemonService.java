@@ -8,4 +8,6 @@ public interface PokemonService {
     PokemonDtoResponse createPokemon(PokemonDtoResponse pokemonDtoResponse);
     List<PokemonDtoResponse> getAllPokemon();
     PokemonDtoResponse getPokemonById(Long id);
+    PokemonDtoResponse updatePokemon(PokemonDtoResponse pokemonDtoResponse, Long id);
+    void deletePokemon(Long id);
 }

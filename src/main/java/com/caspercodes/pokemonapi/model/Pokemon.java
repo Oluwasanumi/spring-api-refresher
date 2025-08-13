@@ -1,10 +1,10 @@
 package com.caspercodes.pokemonapi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,4 +20,12 @@ public class Pokemon {
     private String name;
 
     private String type;
+
+    @OneToMany(
+            mappedBy = "pokemon",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    private List<Review> reviews = new ArrayList<>();
 }

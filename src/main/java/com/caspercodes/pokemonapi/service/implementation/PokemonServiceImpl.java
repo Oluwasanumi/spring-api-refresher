@@ -9,7 +9,6 @@ import com.caspercodes.pokemonapi.service.PokemonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,23 +38,20 @@ public class PokemonServiceImpl implements PokemonService {
     // .stream().map() is basically for many items, it converts a list of entities to a list of DTOs.
     @Override
     public PaginationResponse getAllPokemon(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Pokemon> allPokemon = pokemonRepository.findAll(pageable);
-        List<Pokemon> pokemonList = allPokemon.getContent();
+        Page<Pokemon> allPokemon = pokemonRepository.findAll(PageRequest.of(pageNo, pageSize));
 
-        List<PokemonDtoResponse> content = pokemonList.stream()
+        List<PokemonDtoResponse> content = allPokemon.getContent().stream()
                 .map(this::mapToDto)
                 .toList();
 
-        PaginationResponse paginationResponse = new PaginationResponse();
-        paginationResponse.setContent(content);
-        paginationResponse.setPageNo(allPokemon.getNumber());
-        paginationResponse.setPageSize(allPokemon.getSize());
-        paginationResponse.setTotalElements(allPokemon.getTotalElements());
-        paginationResponse.setTotalPages(allPokemon.getTotalPages());
-        paginationResponse.setLastPage(allPokemon.isLast());
-
-        return paginationResponse;
+        return new PaginationResponse(
+                content,
+                allPokemon.getNumber(),
+                allPokemon.getSize(),
+                allPokemon.getTotalElements(),
+                allPokemon.getTotalPages(),
+                allPokemon.isLast()
+        );
     }
 
     // .map() is for a single item, it converts a single entity to a DTO.

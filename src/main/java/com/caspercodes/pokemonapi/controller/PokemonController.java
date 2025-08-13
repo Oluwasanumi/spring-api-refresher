@@ -1,13 +1,12 @@
 package com.caspercodes.pokemonapi.controller;
 
+import com.caspercodes.pokemonapi.dto.PaginationResponse;
 import com.caspercodes.pokemonapi.dto.PokemonDtoResponse;
 import com.caspercodes.pokemonapi.service.PokemonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,7 +16,7 @@ public class PokemonController {
     private final PokemonService pokemonService;
 
     @GetMapping("pokemon")
-    public ResponseEntity<List<PokemonDtoResponse>> getAllPokemon(
+    public ResponseEntity<PaginationResponse> getAllPokemon(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
     ) {

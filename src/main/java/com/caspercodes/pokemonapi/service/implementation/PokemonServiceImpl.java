@@ -1,5 +1,6 @@
 package com.caspercodes.pokemonapi.service.implementation;
 
+import com.caspercodes.pokemonapi.dto.PaginationResponse;
 import com.caspercodes.pokemonapi.dto.PokemonDtoResponse;
 import com.caspercodes.pokemonapi.exception.PokemonNotFoundException;
 import com.caspercodes.pokemonapi.model.Pokemon;
@@ -37,14 +38,24 @@ public class PokemonServiceImpl implements PokemonService {
 
     // .stream().map() is basically for many items, it converts a list of entities to a list of DTOs.
     @Override
-    public List<PokemonDtoResponse> getAllPokemon(int pageNo, int pageSize) {
+    public PaginationResponse getAllPokemon(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Pokemon> allPokemon = pokemonRepository.findAll(pageable);
         List<Pokemon> pokemonList = allPokemon.getContent();
 
-        return pokemonList.stream()
+        List<PokemonDtoResponse> content = pokemonList.stream()
                 .map(this::mapToDto)
                 .toList();
+
+        PaginationResponse paginationResponse = new PaginationResponse();
+        paginationResponse.setContent(content);
+        paginationResponse.setPageNo(allPokemon.getNumber());
+        paginationResponse.setPageSize(allPokemon.getSize());
+        paginationResponse.setTotalElements(allPokemon.getTotalElements());
+        paginationResponse.setTotalPages(allPokemon.getTotalPages());
+        paginationResponse.setLastPage(allPokemon.isLast());
+
+        return paginationResponse;
     }
 
     // .map() is for a single item, it converts a single entity to a DTO.
@@ -84,7 +95,7 @@ public class PokemonServiceImpl implements PokemonService {
     //Custom mapper, DTO to entity
     private Pokemon mapToEntity(PokemonDtoResponse pokemonDtoResponse) {
         Pokemon pokemon = new Pokemon();
-//        pokemon.setId(pokemonDtoResponse.getId());
+        pokemon.setId(pokemonDtoResponse.getId());
         pokemon.setName(pokemonDtoResponse.getName());
         pokemon.setType(pokemonDtoResponse.getType());
         return pokemon;

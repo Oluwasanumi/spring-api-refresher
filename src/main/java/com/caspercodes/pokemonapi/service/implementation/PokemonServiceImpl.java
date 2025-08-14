@@ -26,13 +26,7 @@ public class PokemonServiceImpl implements PokemonService {
         pokemon.setType(pokemonDtoResponse.getType());
 
         Pokemon savedPokemon = pokemonRepository.save(pokemon);
-
-        // Here I'm using a constructor for the DTO response object. I prefer this, easier to understand and maintain.
-        return new PokemonDtoResponse(
-                savedPokemon.getId(),
-                savedPokemon.getName(),
-                savedPokemon.getType()
-        );
+        return mapToDto(savedPokemon);
     }
 
     // .stream().map() is basically for many items, it converts a list of entities to a list of DTOs.

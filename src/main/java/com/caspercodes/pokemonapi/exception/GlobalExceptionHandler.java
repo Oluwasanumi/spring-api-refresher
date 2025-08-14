@@ -20,4 +20,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleReviewNotFoundException(ReviewNotFoundException ex, WebRequest request) {
+        var errorResponse = new ApiErrorResponse();
+
+        errorResponse.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setTimeStamp(new Date());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }

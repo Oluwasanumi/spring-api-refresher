@@ -21,10 +21,7 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public PokemonDtoResponse createPokemon(PokemonDtoResponse pokemonDtoResponse) {
-        Pokemon pokemon = new Pokemon();
-        pokemon.setName(pokemonDtoResponse.getName());
-        pokemon.setType(pokemonDtoResponse.getType());
-
+        Pokemon pokemon = mapToEntity(pokemonDtoResponse);
         Pokemon savedPokemon = pokemonRepository.save(pokemon);
         return mapToDto(savedPokemon);
     }
@@ -33,19 +30,7 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public PaginationResponse getAllPokemon(int pageNo, int pageSize) {
         Page<Pokemon> allPokemon = pokemonRepository.findAll(PageRequest.of(pageNo, pageSize));
-
-        List<PokemonDtoResponse> content = allPokemon.getContent().stream()
-                .map(this::mapToDto)
-                .toList();
-
-        return new PaginationResponse(
-                content,
-                allPokemon.getNumber(),
-                allPokemon.getSize(),
-                allPokemon.getTotalElements(),
-                allPokemon.getTotalPages(),
-                allPokemon.isLast()
-        );
+        return mapToPaginationResponse(allPokemon);
     }
 
     // .map() is for a single item, it converts a single entity to a DTO.
@@ -58,7 +43,8 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public PokemonDtoResponse updatePokemon(PokemonDtoResponse pokemonDtoResponse, Long id) {
-        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon to be updated of id: " + id + " cannot found"));
+        Pokemon pokemon = pokemonRepository.findById(id)
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon to be updated of id: " + id + " cannot found"));
 
         pokemon.setName(pokemonDtoResponse.getName());
         pokemon.setType(pokemonDtoResponse.getType());
@@ -69,25 +55,38 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public void deletePokemon(Long id) {
-        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon to be deleted with id: " + id + " cannot found"));
+        Pokemon pokemon = pokemonRepository.findById(id)
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon to be deleted with id: " + id + " cannot found"));
         pokemonRepository.delete(pokemon);
     }
 
-    //Custom mapper, entity to DTO
     private PokemonDtoResponse mapToDto(Pokemon pokemon) {
-        PokemonDtoResponse pokemonDtoResponse = new PokemonDtoResponse();
-        pokemonDtoResponse.setId(pokemon.getId());
-        pokemonDtoResponse.setName(pokemon.getName());
-        pokemonDtoResponse.setType(pokemon.getType());
-        return pokemonDtoResponse;
+        return new PokemonDtoResponse(
+                pokemon.getId(),
+                pokemon.getName(),
+                pokemon.getType()
+        );
     }
-
-    //Custom mapper, DTO to entity
+    
     private Pokemon mapToEntity(PokemonDtoResponse pokemonDtoResponse) {
         Pokemon pokemon = new Pokemon();
-        pokemon.setId(pokemonDtoResponse.getId());
         pokemon.setName(pokemonDtoResponse.getName());
         pokemon.setType(pokemonDtoResponse.getType());
         return pokemon;
+    }
+
+    private PaginationResponse mapToPaginationResponse(Page<Pokemon> pokemonPage) {
+        List<PokemonDtoResponse> content = pokemonPage.getContent().stream()
+                .map(this::mapToDto)
+                .toList();
+
+        return new PaginationResponse(
+                content,
+                pokemonPage.getNumber(),
+                pokemonPage.getSize(),
+                pokemonPage.getTotalElements(),
+                pokemonPage.getTotalPages(),
+                pokemonPage.isLast()
+        );
     }
 }

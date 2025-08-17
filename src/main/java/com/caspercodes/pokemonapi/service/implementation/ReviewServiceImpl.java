@@ -40,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDtoResponse getReviewById(Long pokemonId, Long reviewId) {
-        Review review = validateAndGetReview(pokemonId, reviewId);
+        Review review =validateAndGetReview(pokemonId, reviewId);
         return mapToDto(review);
     }
 

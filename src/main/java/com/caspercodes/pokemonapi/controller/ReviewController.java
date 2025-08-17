@@ -35,7 +35,7 @@ public class ReviewController {
     @PutMapping("pokemon/{pokemonId}/reviews/{reviewId}")
     public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable(value = "pokemonId") Long pokemonId,
                                                           @PathVariable(value = "reviewId") Long reviewId,
-                                                          ReviewDtoResponse reviewDtoResponse) {
+                                                          @RequestBody ReviewDtoResponse reviewDtoResponse) {
         return new ResponseEntity<>(reviewService.updateReview(pokemonId, reviewId, reviewDtoResponse), HttpStatus.OK);
     }
 
